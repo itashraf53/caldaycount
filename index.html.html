@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> کیلکولیٹر اور تاریخ شمار</title>
+    
+    <!-- Import Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #0a0a2a;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Heading Font Style */
+        h1, h2, .header-title, .footer-text {
+            font-family: 'Jameel Noori Nastaleeq', 'Noto Naskh Arabic', serif;
+        }
+
+        /* Pill-shaped heading with gradient background */
+        .pill-heading {
+            display: inline-block;
+            background: linear-gradient(145deg, #BA867B, #9A6A5F);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Header Styles - Grey with 3D effect */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px; /* Reduced for mobile */
+            background: linear-gradient(145deg, #808080, #5a5a5a);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 
+                0 8px 15px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .header-title {
+            display: none; /* Hide the title to reduce height */
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 6px; /* Reduced gap for mobile */
+            width: auto;
+            flex-wrap: wrap;
+        }
+
+        /* Chocolate 3D Button Styles - Mobile first */
+        .chocolate-btn {
+            position: relative;
+            display: inline-block;
+            padding: 6px 10px; /* Reduced padding for mobile */
+            background: linear-gradient(145deg, #8B4513, #5D2F0A);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 
+                0 8px 15px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 12px; /* Reduced font size for mobile */
+            overflow: hidden;
+            border: 2px solid rgba(139, 69, 19, 0.8);
+            white-space: nowrap;
+        }
+
+        .chocolate-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #A0522D, #8B4513);
+            border-radius: 18px;
+            z-index: -1;
+            transform: translateZ(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .chocolate-btn::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: linear-gradient(145deg, #8B4513, #5D2F0A);
+            border-radius: 18px;
+            z-index: -1;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .chocolate-btn:hover {
+            transform: translateY(-3px) translateZ(8px);
+            box-shadow: 
+                0 12px 20px rgba(0, 0, 0, 0.4),
+                0 6px 10px rgba(0, 0, 0, 0.3),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .chocolate-btn:active {
+            transform: translateY(1px) translateZ(2px);
+            box-shadow: 
+                0 3px 6px rgba(0, 0, 0, 0.3),
+                0 1px 2px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Color variations for chocolate buttons */
+        .btn-home {
+            background: linear-gradient(145deg, #4facfe, #00f2fe);
+            border-color: rgba(79, 172, 254, 0.8);
+        }
+
+        .btn-home::before {
+            background: linear-gradient(145deg, #5abffe, #10f3fe);
+        }
+
+        .btn-home::after {
+            background: linear-gradient(145deg, #4facfe, #00f2fe);
+        }
+
+        .btn-calc {
+            background: linear-gradient(145deg, #a18cd1, #fbc2eb);
+            border-color: rgba(161, 140, 209, 0.8);
+        }
+
+        .btn-calc::before {
+            background: linear-gradient(145deg, #b19ce1, #fcd3f1);
+        }
+
+        .btn-calc::after {
+            background: linear-gradient(145deg, #a18cd1, #fbc2eb);
+        }
+
+        .btn-date {
+            background: linear-gradient(145deg, #ff5e7d, #ff9966);
+            border-color: rgba(255, 94, 125, 0.8);
+        }
+
+        .btn-date::before {
+            background: linear-gradient(145deg, #ff6e8d, #ffa976);
+        }
+
+        .btn-date::after {
+            background: linear-gradient(145deg, #ff5e7d, #ff9966);
+        }
+
+        .btn-developer {
+            background: linear-gradient(145deg, #ff5e7d, #ff9966);
+            border-color: rgba(255, 94, 125, 0.8);
+        }
+
+        .btn-developer::before {
+            background: linear-gradient(145deg, #ff6e8d, #ffa976);
+        }
+
+        .btn-developer::after {
+            background: linear-gradient(145deg, #ff5e7d, #ff9966);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 70px 10px 70px; /* Reduced for mobile */
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Enhanced Galaxy Background */
+        .galaxy {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a4a 25%, #2a1a5a 50%, #3a2a7a 75%, #4a3a9a 100%);
+            overflow: hidden;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .shooting-star {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+            animation: shooting 3s linear infinite;
+        }
+
+        @keyframes shooting {
+            0% { transform: translateX(-100px) translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(1000px) translateY(300px); opacity: 0; }
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .nebula1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #ff5e7d 0%, #ff9966 100%);
+            top: 10%;
+            left: 10%;
+        }
+
+        .nebula2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #4facfe 0%, #00f2fe 100%);
+            bottom: 10%;
+            right: 10%;
+        }
+
+        .nebula3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #a18cd1 0%, #fbc2eb 100%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Planets */
+        .planet-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .orbit {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Mercury */
+        .mercury-orbit {
+            width: 200px;
+            height: 200px;
+            animation: rotate 10s linear infinite;
+        }
+
+        .mercury {
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #e6e6e6 0%, #a9a9a9 100%);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Venus */
+        .venus-orbit {
+            width: 300px;
+            height: 300px;
+            animation: rotate 15s linear infinite;
+        }
+
+        .venus {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #f5deb3 0%, #d2691e 100%);
+            box-shadow: 0 0 15px rgba(245, 222, 179, 0.7);
+        }
+
+        /* Earth */
+        .earth-orbit {
+            width: 400px;
+            height: 400px;
+            animation: rotate 20s linear infinite;
+        }
+
+        .earth {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #1e90ff 0%, #0066cc 100%);
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.8);
+        }
+
+        /* Mars */
+        .mars-orbit {
+            width: 500px;
+            height: 500px;
+            animation: rotate 25s linear infinite;
+        }
+
+        .mars {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff6347 0%, #8b0000 100%);
+            box-shadow: 0 0 15px rgba(255, 99, 71, 0.7);
+        }
+
+        /* Jupiter */
+        .jupiter-orbit {
+            width: 650px;
+            height: 650px;
+            animation: rotate 35s linear infinite;
+        }
+
+        .jupiter {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #daa520 0%, #b8860b 100%);
+            box-shadow: 0 0 25px rgba(218, 165, 32, 0.7);
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            padding: 10px;
+            z-index: 1;
+        }
+
+        /* Draggable elements */
+        .draggable {
+            cursor: move;
+            transition: transform 0.3s ease;
+        }
+
+        .draggable:hover {
+            transform: scale(1.02);
+        }
+
+        .dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .drag-over {
+            border: 2px dashed #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Calculator Styles - Mobile first */
+        .calculator {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 10px; /* Reduced padding */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 280px; /* Reduced width for mobile */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .calculator h2 {
+            text-align: center;
+            margin-bottom: 10px; /* Reduced margin */
+            color: #DEA193; /* Warm peach/coral color */
+            text-shadow: 
+                1px 1px 0 #E5B8AD,
+                2px 2px 0 #DCA395,
+                3px 3px 3px rgba(0, 0, 0, 0.2);
+            font-size: 20px; /* Increased font size */
+            transform-style: preserve-3d;
+            transform: translateZ(5px);
+            font-weight: 700;
+        }
+
+        .calc-display {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            border-radius: 10px;
+            padding: 10px; /* Reduced padding */
+            margin-bottom: 10px; /* Reduced margin */
+            text-align: right;
+            font-size: 18px; /* Reduced font size for mobile */
+            height: 40px; /* Reduced height */
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            direction: ltr;
+            color: #2c3e50;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px; /* Reduced gap */
+        }
+
+        /* Chocolate style for calculator buttons - Mobile first */
+        .calc-btn {
+            background: linear-gradient(145deg, #8B4513, #5D2F0A);
+            border: 2px solid rgba(139, 69, 19, 0.8);
+            border-radius: 12px;
+            padding: 10px 5px; /* Reduced padding */
+            font-size: 14px; /* Reduced font size for mobile */
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            min-height: 40px; /* Reduced height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calc-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #A0522D, #8B4513);
+            border-radius: 10px;
+            z-index: -1;
+            transform: translateZ(-8px);
+            transition: all 0.3s ease;
+        }
+
+        .calc-btn::after {
+            content: "";
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            background: linear-gradient(145deg, #8B4513, #5D2F0A);
+            border-radius: 11px;
+            z-index: -1;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px) translateZ(5px);
+            box-shadow: 
+                0 6px 10px rgba(0, 0, 0, 0.3),
+                0 3px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .calc-btn:active {
+            transform: translateY(1px) translateZ(2px);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 1px 2px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .calc-btn.operator {
+            background: linear-gradient(145deg, #D2691E, #A0522D);
+            border-color: rgba(210, 105, 30, 0.8);
+        }
+
+        .calc-btn.operator::before {
+            background: linear-gradient(145deg, #DEB887, #D2691E);
+        }
+
+        .calc-btn.operator::after {
+            background: linear-gradient(145deg, #D2691E, #A0522D);
+        }
+
+        .calc-btn.equals {
+            background: linear-gradient(145deg, #FFD700, #DAA520);
+            border-color: rgba(255, 215, 0, 0.8);
+            grid-column: span 2;
+        }
+
+        .calc-btn.equals::before {
+            background: linear-gradient(145deg, #FFED4E, #FFD700);
+        }
+
+        .calc-btn.equals::after {
+            background: linear-gradient(145deg, #FFD700, #DAA520);
+        }
+
+        .calc-btn.clear {
+            background: linear-gradient(145deg, #CD5C5C, #8B0000);
+            border-color: rgba(205, 92, 92, 0.8);
+        }
+
+        .calc-btn.clear::before {
+            background: linear-gradient(145deg, #E9967A, #CD5C5C);
+        }
+
+        .calc-btn.clear::after {
+            background: linear-gradient(145deg, #CD5C5C, #8B0000);
+        }
+
+        .calc-btn.percentage {
+            background: linear-gradient(145deg, #9370DB, #7B68EE);
+            border-color: rgba(147, 112, 219, 0.8);
+        }
+
+        .calc-btn.percentage::before {
+            background: linear-gradient(145deg, #A080DB, #9370DB);
+        }
+
+        .calc-btn.percentage::after {
+            background: linear-gradient(145deg, #9370DB, #7B68EE);
+        }
+
+        /* Date Calculator Styles - Mobile first */
+        .date-calculator {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 10px; /* Reduced padding */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 280px; /* Reduced width for mobile */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .date-calculator h2 {
+            text-align: center;
+            margin-bottom: 10px; /* Reduced margin */
+            color: #DEA193; /* Warm peach/coral color */
+            text-shadow: 
+                1px 1px 0 #E5B8AD,
+                2px 2px 0 #DCA395,
+                3px 3px 3px rgba(0, 0, 0, 0.2);
+            font-size: 20px; /* Increased font size */
+            transform-style: preserve-3d;
+            transform: translateZ(5px);
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 8px; /* Reduced margin */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px; /* Reduced margin */
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 14px; /* Reduced font size for mobile */
+        }
+
+        .date-input-wrapper {
+            position: relative;
+        }
+
+        .date-input-wrapper input {
+            width: 100%;
+            padding: 8px; /* Reduced padding */
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            border-radius: 8px;
+            color: #2c3e50;
+            font-size: 14px; /* Reduced font size for mobile */
+            cursor: pointer;
+            direction: ltr;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-input-wrapper input::-webkit-calendar-picker-indicator {
+            filter: invert(0.3);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .date-input-wrapper input::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        /* Chocolate style for calculate button - Mobile first */
+        .calculate-btn {
+            background: linear-gradient(145deg, #8B4513, #5D2F0A);
+            border: 2px solid rgba(139, 69, 19, 0.8);
+            border-radius: 12px;
+            padding: 8px 12px; /* Reduced padding */
+            color: #fff;
+            font-size: 14px; /* Reduced font size for mobile */
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            min-height: 35px; /* Reduced height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calculate-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #A0522D, #8B4513);
+            border-radius: 10px;
+            z-index: -1;
+            transform: translateZ(-8px);
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn::after {
+            content: "";
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            background: linear-gradient(145deg, #8B4513, #5D2F0A);
+            border-radius: 11px;
+            z-index: -1;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px) translateZ(5px);
+            box-shadow: 
+                0 6px 10px rgba(0, 0, 0, 0.3),
+                0 3px 6px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(1px) translateZ(2px);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 1px 2px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .result {
+            margin-top: 10px; /* Reduced margin */
+            padding: 8px; /* Reduced padding */
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px; /* Reduced font size for mobile */
+            min-height: 35px; /* Reduced height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            color: #2c3e50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(46, 204, 113, 0.9);
+            color: white;
+            padding: 10px 15px; /* Reduced padding for mobile */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 100;
+            font-size: 12px; /* Reduced font size for mobile */
+            max-width: 80%;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* 3D Footer - Grey with 3D effect */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px; /* Reduced for mobile */
+            text-align: center;
+            z-index: 2;
+            perspective: 500px;
+            background: linear-gradient(145deg, #808080, #5a5a5a);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 8px 15px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .footer-text {
+            display: none; /* Hide the text to reduce height */
+        }
+
+        /* Tablet styles */
+        @media (min-width: 768px) {
+            .header {
+                padding: 10px;
+            }
+
+            .nav-menu {
+                gap: 8px;
+            }
+
+            .chocolate-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .main-content {
+                padding: 75px 10px 75px;
+            }
+            
+            .calculator, .date-calculator {
+                max-width: 320px;
+                padding: 12px; /* Reduced padding */
+            }
+
+            .pill-heading {
+                font-size: 20px;
+                padding: 8px 25px;
+            }
+
+            .calculator h2, .date-calculator h2 {
+                font-size: 22px; /* Increased font size for tablet */
+                margin-bottom: 12px; /* Reduced margin */
+            }
+
+            .calc-display {
+                font-size: 19px;
+                height: 45px;
+                padding: 12px; /* Reduced padding */
+                margin-bottom: 12px; /* Reduced margin */
+            }
+
+            .calc-buttons {
+                gap: 6px; /* Reduced gap */
+            }
+
+            .calc-btn {
+                padding: 12px 6px; /* Reduced padding */
+                font-size: 15px;
+                min-height: 45px;
+            }
+
+            .form-group label {
+                font-size: 15px;
+                margin-bottom: 5px; /* Reduced margin */
+            }
+
+            .date-input-wrapper input {
+                padding: 10px; /* Reduced padding */
+                font-size: 15px;
+            }
+
+            .calculate-btn {
+                padding: 10px 14px; /* Reduced padding */
+                font-size: 15px;
+                min-height: 40px; /* Reduced height */
+            }
+
+            .result {
+                font-size: 15px;
+                min-height: 40px;
+                padding: 10px; /* Reduced padding */
+            }
+
+            .notification {
+                font-size: 13px;
+                padding: 11px 16px;
+            }
+
+            .footer {
+                padding: 10px;
+            }
+        }
+
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            .header {
+                padding: 12px;
+            }
+
+            .nav-menu {
+                gap: 12px;
+            }
+
+            .chocolate-btn {
+                padding: 10px 16px;
+                font-size: 15px;
+            }
+
+            .main-content {
+                padding: 80px 10px 80px;
+            }
+            
+            .calculator, .date-calculator {
+                max-width: 350px;
+                padding: 15px; /* Reduced padding */
+            }
+
+            .pill-heading {
+                font-size: 22px;
+                padding: 10px 30px;
+            }
+
+            .calculator h2, .date-calculator h2 {
+                font-size: 24px; /* Increased font size for desktop */
+                margin-bottom: 15px; /* Reduced margin */
+            }
+
+            .calc-display {
+                font-size: 20px;
+                height: 48px;
+                padding: 14px; /* Reduced padding */
+                margin-bottom: 15px; /* Reduced margin */
+            }
+
+            .calc-buttons {
+                gap: 7px; /* Reduced gap */
+            }
+
+            .calc-btn {
+                padding: 14px 7px; /* Reduced padding */
+                font-size: 16px;
+                min-height: 48px;
+            }
+
+            .form-group label {
+                font-size: 15px;
+                margin-bottom: 6px; /* Reduced margin */
+            }
+
+            .date-input-wrapper input {
+                padding: 11px; /* Reduced padding */
+                font-size: 15px;
+            }
+
+            .calculate-btn {
+                padding: 11px 15px; /* Reduced padding */
+                font-size: 15px;
+                min-height: 42px; /* Reduced height */
+            }
+
+            .result {
+                font-size: 16px;
+                min-height: 42px;
+                padding: 11px; /* Reduced padding */
+            }
+
+            .notification {
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+
+            .footer {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-title"> کیلکولیٹر اور تاریخ شمار</div>
+            <div class="nav-menu">
+                <button class="chocolate-btn btn-home" onclick="scrollToTop()">صفحہ اول</button>
+                <button class="chocolate-btn btn-calc" onclick="scrollToCalculator()">کیلکولیٹر</button>
+                <button class="chocolate-btn btn-date" onclick="scrollToDateCalculator()">تاریخ فرق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="galaxy">
+            <div class="stars" id="stars"></div>
+            <div class="shooting-star"></div>
+            <div class="nebula nebula1"></div>
+            <div class="nebula nebula2"></div>
+            <div class="nebula nebula3"></div>
+            
+            <!-- Planets -->
+            <div class="planet-container">
+                <div class="orbit mercury-orbit">
+                    <div class="planet mercury"></div>
+                </div>
+                <div class="orbit venus-orbit">
+                    <div class="planet venus"></div>
+                </div>
+                <div class="orbit earth-orbit">
+                    <div class="planet earth"></div>
+                </div>
+                <div class="orbit mars-orbit">
+                    <div class="planet mars"></div>
+                </div>
+                <div class="orbit jupiter-orbit">
+                    <div class="planet jupiter"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="container">
+            <!-- Date Calculator (now first) -->
+            <div class="date-calculator draggable" id="date-calculator" draggable="true">
+                <center><h1 class="pill-heading">مکمل دن اور تاریخ جوڑنے کا طریقہ</h1></center>
+                <div class="form-group">
+                    <label for="start-date">شروعاتی تاریخ</label>
+                    <div class="date-input-wrapper">
+                        <input type="date" id="start-date" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="end-date">اختتامی تاریخ</label>
+                    <div class="date-input-wrapper">
+                        <input type="date" id="end-date" required>
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculateDays()"> مکمّل دن دیکھنے کے لئے یہاں  کِلک کریں          </button>
+                <div class="result" id="result">تاریخوں کا انتخاب کریں اور حساب لگائیں پر کلک کریں</div>
+            </div>
+
+            <!-- Calculator (now second) -->
+            <div class="calculator draggable" id="calculator" draggable="true">
+                <center><h1 class="pill-heading">میرا کیلکولیٹر</h1></center>
+                <div class="calc-display" id="display">0</div>
+                <div class="calc-buttons">
+                    <button class="calc-btn clear" onclick="clearDisplay()">C</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('/')">/</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('*')">×</button>
+                    <button class="calc-btn operator" onclick="deleteLast()">⌫</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+                    <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+                    <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('-')">-</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+                    <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+                    <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('+')">+</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+                    <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+                    <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+                    <button class="calc-btn percentage" onclick="percentage()">%</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('0')">0</button>
+                    <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+                    <button class="calc-btn equals" onclick="calculate()">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <a href="https://itashraf53.github.io/myportfolio/" target="_blank" class="chocolate-btn btn-developer">Click here to see developer</a>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Calculator functionality
+        let display = document.getElementById('display');
+        let currentInput = '0';
+        let shouldResetDisplay = false;
+
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function appendToDisplay(value) {
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+
+            if (currentInput === '0' && value !== '.') {
+                currentInput = value;
+            } else {
+                currentInput += value;
+            }
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentInput.length > 1) {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                // Replace × with * for evaluation
+                let expression = currentInput.replace(/×/g, '*');
+                let result = eval(expression);
+                
+                // Handle division by zero
+                if (!isFinite(result)) {
+                    currentInput = 'خطا';
+                } else {
+                    currentInput = result.toString();
+                }
+                shouldResetDisplay = true;
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'خطا';
+                updateDisplay();
+                shouldResetDisplay = true;
+            }
+        }
+
+        // Percentage function
+        function percentage() {
+            try {
+                let value = parseFloat(currentInput);
+                if (!isNaN(value)) {
+                    currentInput = (value / 100).toString();
+                    updateDisplay();
+                    shouldResetDisplay = true;
+                }
+            } catch (error) {
+                currentInput = 'خطا';
+                updateDisplay();
+                shouldResetDisplay = true;
+            }
+        }
+
+        // Date calculator functionality
+        function calculateDays() {
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            const resultElement = document.getElementById('result');
+            
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!startDate || !endDate) {
+                resultElement.textContent = 'براہ کرم دونوں تاریخوں کا انتخاب کریں';
+                return;
+            }
+
+            // Parse dates
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            // Validate dates
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                resultElement.textContent = 'غلط تاریخوں کا انتخاب کیا گیا';
+                return;
+            }
+
+            // Calculate difference in milliseconds
+            const diffTime = Math.abs(end - start);
+            
+            // Convert to days (1 day = 24 * 60 * 60 * 1000 milliseconds)
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Include both start and end day in the count
+            const totalDays = diffDays + 1;
+            
+            // Format dates for display
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            const formattedStart = start.toLocaleDateString(undefined, options);
+            const formattedEnd = end.toLocaleDateString(undefined, options);
+            
+            resultElement.innerHTML = `
+                <div>
+                    <div><strong>${totalDays} دن</strong></div>
+                    <div style="font-size: 14px; margin-top: 5px; opacity: 0.8;">
+                        ${formattedStart} سے ${formattedEnd} تک
+                    </div>
+                    <div style="font-size: 12px; margin-top: 3px; opacity: 0.6;">
+                        (شروعاتی اور اختتامی تاریخ دونوں شامل ہیں)
+                    </div>
+                </div>
+            `;
+            
+            // Show notification only when user manually calculates
+            showNotification(`     آپ کے مکمّل         ${totalDays}      دن ہوئے ہیں` );
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Scroll to calculator
+        function scrollToCalculator() {
+            document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Scroll to date calculator
+        function scrollToDateCalculator() {
+            document.getElementById('date-calculator').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Notification system
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Generate stars for galaxy background
+        function generateStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random()  * 100;
+                
+                // Random size
+                const size = Math.random() * 3;
+                
+                // Random animation delay
+                const delay = Math.random() * 5;
+                
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Drag and drop functionality
+        let draggedElement = null;
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            
+            // Add visual feedback
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+            
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            // Don't do anything if dropping on the same element
+            if (draggedElement !== this) {
+                const container = document.getElementById('container');
+                const allElements = [...container.children];
+                const draggedIndex = allElements.indexOf(draggedElement);
+                const targetIndex = allElements.indexOf(this);
+                
+                // Swap the elements in the DOM
+                if (draggedIndex < targetIndex) {
+                    container.insertBefore(draggedElement, this.nextSibling);
+                } else {
+                    container.insertBefore(draggedElement, this);
+                }
+                
+                // Show notification
+                showNotification('مواد کی جگہ تبدیل ہو گئی ہے');
+            }
+            
+            // Remove visual feedback
+            this.classList.remove('drag-over');
+            draggedElement.classList.remove('dragging');
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            // Remove visual feedback from all elements
+            const draggables = document.querySelectorAll('.draggable');
+            draggables.forEach(draggable => {
+                draggable.classList.remove('drag-over', 'dragging');
+            });
+        }
+
+        // Initialize the page
+        window.onload = function() {
+            generateStars();
+            
+            // Set up drag and drop
+            const draggables = document.querySelectorAll('.draggable');
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', handleDragStart, false);
+                draggable.addEventListener('dragover', handleDragOver, false);
+                draggable.addEventListener('dragenter', handleDragEnter, false);
+                draggable.addEventListener('dragleave', handleDragLeave, false);
+                draggable.addEventListener('drop', handleDrop, false);
+                draggable.addEventListener('dragend', handleDragEnd, false);
+            });
+            
+            // Set today's date as default for end date
+            const today = new Date();
+            const formattedToday = today.toISOString().split('T')[0];
+            document.getElementById('end-date').value = formattedToday;
+            
+            // Set start date to 30 days ago
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const formattedThirtyDaysAgo = thirtyDaysAgo.toISOString().split('T')[0];
+            document.getElementById('start-date').value = formattedThirtyDaysAgo;
+            
+            // Removed the automatic calculation on page load
+            // Now the result will show the default text until user clicks calculate
+        };
+    </script>
+</body>
+</html>
